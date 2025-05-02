@@ -79,7 +79,7 @@ async function processQuery(query) {
     
     try {
         // First LLM call to analyze the query
-        const analysisResponse = await callLLMWithRetry(currentContext + '\n\nAnalyze this query and provide a concise answer with only the essential information: ' + query);
+        const analysisResponse = await callLLMWithRetry(currentContext + '\n\nProvide a complete mathematical solution for: ' + query);
         
         // Check if tool usage is needed
         if (analysisResponse.includes('tool')) {
@@ -93,7 +93,7 @@ async function processQuery(query) {
             currentContext += `\nTool Result: ${toolResult}`;
             
             // Final LLM call to provide the complete answer
-            const finalResponse = await callLLMWithRetry(currentContext + '\n\nProvide a concise final answer with only the essential information:');
+            const finalResponse = await callLLMWithRetry(currentContext + '\n\nProvide a complete mathematical solution based on the tool result:');
             
             return finalResponse;
         } else {
@@ -139,15 +139,15 @@ async function callLLM(prompt) {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are a helpful assistant that provides concise answers with only essential information. For mathematical calculations, provide only the final result. Do not include any special symbols, boxes, or formatting. Just provide the plain answer.'
+                        content: 'You are a helpful assistant that provides complete mathematical answers. For calculations, show all steps clearly and provide the final result. Use proper mathematical notation and ensure the answer is complete.'
                     },
                     {
                         role: 'user',
                         content: prompt
                     }
                 ],
-                temperature: 0.1,
-                max_tokens: 100,
+                temperature: 0.3,
+                max_tokens: 500,
                 top_p: 0.95,
                 frequency_penalty: 0,
                 presence_penalty: 0
@@ -160,10 +160,16 @@ async function callLLM(prompt) {
         }
 
         const data = await apiResponse.json();
-        // Clean up the response by removing special characters and formatting
+        // Clean up the response while preserving mathematical content
         let cleanResponse = data.choices[0].message.content.trim();
         cleanResponse = cleanResponse.replace(/[$\boxed{}]/g, ''); // Remove $, \boxed, and {}
         cleanResponse = cleanResponse.replace(/^\s*The\s+final\s+answer\s+is:\s*/i, ''); // Remove "The final answer is:"
+        
+        // Ensure the response is complete
+        if (cleanResponse.includes('...') || cleanResponse.includes('==>')) {
+            throw new Error('Incomplete response received');
+        }
+        
         return cleanResponse;
     } catch (error) {
         console.error('LLM API Error:', error);
