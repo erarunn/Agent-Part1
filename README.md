@@ -1,13 +1,14 @@
 # Agentic AI Chrome Extension
 
-A Chrome extension that implements an agentic AI system capable of handling complex tasks through multiple LLM interactions.
+A Chrome extension that implements an agentic AI system using the meta-llama/llama-4-scout-17b-16e-instruct model. The extension can handle complex queries by breaking them down into multiple LLM interactions and tool calls.
 
 ## Features
 
-- Simple and intuitive interface
-- Maintains conversation context
-- Supports tool calls for complex calculations
-- Handles multiple LLM interactions automatically
+- Interactive chat interface
+- Persistent conversation history
+- Agentic AI capabilities
+- Tool integration for complex tasks
+- Clean and modern UI
 
 ## Installation
 
@@ -16,28 +17,40 @@ A Chrome extension that implements an agentic AI system capable of handling comp
 3. Enable "Developer mode" in the top right
 4. Click "Load unpacked" and select the extension directory
 
+## Configuration
+
+Before using the extension, you need to:
+
+1. Replace `YOUR_LLM_API_ENDPOINT` in popup.js with your actual LLM API endpoint
+2. Replace `YOUR_API_KEY` in popup.js with your actual API key
+
 ## Usage
 
 1. Click the extension icon in your Chrome toolbar
-2. Enter your query in the text area
+2. Type your query in the input box
 3. Click "Submit" to process your query
-4. The extension will handle multiple LLM interactions automatically
-5. View the conversation history in the chat window
-
-## Development
-
-To modify the extension:
-
-1. Update the `LLM_API_ENDPOINT` in `background.js` to point to your LLM API
-2. Add new tools in the `tools` object in `background.js`
-3. Modify the UI in `popup.html` and `styles.css`
+4. The extension will:
+   - Analyze your query
+   - Determine if tool usage is needed
+   - Execute necessary tools
+   - Provide a complete answer
 
 ## Example Queries
 
 - "Calculate the sum of exponential values of the first 6 Fibonacci Numbers"
-- "What is the square root of 144?"
-- "Generate the first 10 Fibonacci numbers"
+- "What is the square root of 144 multiplied by the cube root of 27?"
+- "Find the average of the first 10 prime numbers"
 
-## Note
+## Development
 
-This extension requires an LLM API endpoint to function. The current implementation uses a mock endpoint that needs to be replaced with a real one. 
+The extension consists of:
+- manifest.json: Extension configuration
+- popup.html: User interface
+- popup.js: Main logic
+- background.js: Background processes
+- styles.css: Styling
+- icons/: Extension icons
+
+## License
+
+MIT License 
